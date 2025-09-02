@@ -49,6 +49,7 @@
       text-align: center;
       box-shadow: 0 0 25px rgba(0,255,200,0.35);
       animation: zoomIn 0.6s ease;
+      position: relative;
     }
     .popup h2 {
       margin-bottom: 14px;
@@ -106,7 +107,6 @@
     .price { font-size: 19px; margin: 8px 0; font-weight: bold; }
     .strike { text-decoration: line-through; color: #999; font-size: 13px; }
 
-    /* ===== Plan Features ===== */
     .plan ul {
       list-style: none; padding:0; margin:15px 0 0;
       text-align:left; font-size: 13px;
@@ -169,7 +169,6 @@
       border-radius:6px; font-size:13px;
     }
 
-    /* ===== Buttons ===== */
     .loading-btn, #verifyBtn {
       display:none;
       background:#111;
@@ -195,11 +194,13 @@
       100% { transform:translateY(-50%) rotate(360deg); }
     }
 
-    /* ===== Footer ===== */
     footer {
       text-align: center; padding: 12px; font-size: 12px; color: #888;
       margin-top: 20px; border-top: 1px solid #222;
     }
+
+    /* ===== Feedback Section ===== */
+    #feedbackSection h2 { color:#6ee7b7; margin-bottom:12px; }
   </style>
 </head>
 <body>
@@ -220,6 +221,8 @@
         <p>2️⃣ <b>Buy Now</b> dabao</p>
         <p>3️⃣ <b>Secure Payment</b> screen open hoga</p>
         <p>4️⃣ Proceed → UPI App redirect hoga ✅</p>
+        <p>5️⃣ Payment complete hone ke baad ek <b>Key</b> milega</p>
+        <p>6️⃣ Key daal ke <b>Open Panel</b> pe click karo, panel open ho jayega 🔑</p>
       </div>
     </div>
   </div>
@@ -233,7 +236,6 @@
 
   <!-- ===== Plans ===== -->
   <section class="plans">
-    <!-- Plan Template -->
     <div class="plan" onclick="openDetail('1 Month Plan','599')">
       <h3>1 Month</h3>
       <div class="price"><span class="strike">₹799</span><br> ₹599</div>
@@ -313,7 +315,6 @@
       <!-- ===== Enter Key Section ===== -->
       <div id="enterKeySection" style="text-align:center; margin-top:25px;">
         <button class="btn" onclick="showKeyInput()">Enter Your Key 🔑</button>
-        
         <div id="keyInputBox" style="display:none; margin-top:15px;">
           <input type="text" id="userKey" placeholder="Enter your key" style="padding:10px; border-radius:10px; border:none; width:80%; text-align:center;">
           <br>
@@ -322,94 +323,109 @@
           <p style="margin-top:10px; font-size:12px; color:#aaa;">⚠ Key sirf plan buy karne ke baad milegi</p>
         </div>
       </div>
-
     </div>
   </div>
+
+  <!-- ===== Feedback Section ===== -->
+  <section id="feedbackSection" style="padding:25px; text-align:center;">
+    <h2>💬 User Feedback</h2>
+    <div id="feedbackList" style="max-width:500px; margin:15px auto; display:flex; flex-direction:column; gap:15px;"></div>
+    <button class="btn" onclick="openFeedbackInput()">Send Feedback ✏️</button>
+    <div id="feedbackInputBox" style="display:none; margin-top:15px;">
+      <input type="text" id="userFeedback" placeholder="Write your feedback..." style="padding:10px; border-radius:10px; border:none; width:80%; text-align:center;">
+      <br>
+      <button class="btn" style="margin-top:10px;" onclick="submitFeedback()">Submit</button>
+      <div id="feedbackMessage" style="margin-top:10px; color:#6ee7b7; font-weight:bold;"></div>
+    </div>
+  </section>
 
   <footer>
     © 2025 FF Panel Store | All Rights Reserved
   </footer>
 
   <script>
-    // Device detect
     document.getElementById("deviceName").innerText = navigator.userAgent;
 
-    // Close instruction popup
-    function closePopup() {
-      document.getElementById("instruction").style.display = "none";
-    }
+    function closePopup(){ document.getElementById("instruction").style.display="none"; }
 
-    // Animate plan features on scroll
     const featureLists = document.querySelectorAll(".plan li");
-    window.addEventListener("scroll", () => {
-      featureLists.forEach((f, i) => {
+    window.addEventListener("scroll", ()=>{
+      featureLists.forEach((f,i)=>{
         const rect = f.getBoundingClientRect().top;
-        if(rect < window.innerHeight - 50){
-          setTimeout(()=>{ f.classList.add("show"); }, i*100);
-        }
+        if(rect < window.innerHeight - 50){ setTimeout(()=>{ f.classList.add("show"); }, i*100); }
       });
     });
 
-    // ===== Flow control =====
-    let selectedUPI = "";
-
+    let selectedUPI = '';
     function openDetail(name, price){
       document.getElementById("dName").innerText = name;
       document.getElementById("dPrice").innerText = "₹" + price;
-      let fList = document.getElementById("dFeatures");
-      fList.innerHTML = "";
-
-      // Get the clicked plan's features
-      const plan = event.currentTarget;
-      plan.querySelectorAll("ul li").forEach(li=>{
-        let liClone = li.cloneNode(true);
-        liClone.classList.add("show");
-        fList.appendChild(liClone);
-      });
-
-      selectedUPI = `upi://pay?pa=surajit0923b-2@okhdfcbank&pn=FF%20Panel&am=${price}&cu=INR`;
+      document.getElementById("dFeatures").innerHTML = "<li>95% Headshot Rate</li><li>AWM Aimbot</li><li>Sniper Fast Switch</li><li>Player Location</li>";
       document.getElementById("planDetail").style.display = "block";
     }
-
-    function closeDetail(){
-      document.getElementById("planDetail").style.display = "none";
-    }
-
+    function closeDetail(){ document.getElementById("planDetail").style.display="none"; }
     function openSecure(){
-      document.getElementById("upiLink").href = selectedUPI;
-      document.getElementById("securePayment").style.display = "block";
-      document.getElementById("loadingBtn").style.display = "none"; // initially hide
-}
-
-    function closeSecure(){
-      document.getElementById("securePayment").style.display = "none";
+      document.getElementById("planDetail").style.display="none";
+      document.getElementById("securePayment").style.display="block";
     }
+    function closeSecure(){ document.getElementById("securePayment").style.display="none"; }
 
-    // ===== Enter Key Flow =====
-    function showKeyInput(){
-      document.getElementById("keyInputBox").style.display = "block";
-    }
-
-    // Example valid key
-    const VALID_KEY = "FFS2025";
-
+    function showKeyInput(){ document.getElementById("keyInputBox").style.display="block"; }
     function openPanel(){
-      const enteredKey = document.getElementById("userKey").value.trim();
-      const msg = document.getElementById("keyMessage");
-      msg.style.color = "#00ffcc";
-      msg.innerText = "⏳ Verifying key...";
-
-      setTimeout(()=>{
-        if(enteredKey === VALID_KEY){
-          msg.style.color = "#6ee7b7";
-          msg.innerText = "✅ Key valid! Panel opening...";
-          // Redirect or open panel code here
-        } else {
-          msg.style.color = "#ff4d6d";
-          msg.innerText = "❌ Wrong key! Please enter correct key.";
-        }
-      },1500);
+      const key = document.getElementById("userKey").value.trim();
+      if(key === "SENSI123"){ alert("Panel Opened! 🎮"); document.getElementById("keyMessage").innerText=""; }
+      else document.getElementById("keyMessage").innerText="❌ Invalid Key!";
     }
+
+    // ===== Feedback System =====
+    const demoFeedbacks = [
+      {name:"Rohan K.", text:"Panel ne mera game next level ka bana diya! 🔥"},
+      {name:"Sneha M.", text:"Key milte hi panel open hua, sab smooth! ✅"},
+      {name:"Aarav S.", text:"Support aur features mast hai! 👑"},
+      {name:"Meera P.", text:"Fast delivery aur easy to use panel 😎"},
+      {name:"Kunal R.", text:"Mast UI aur animations! Love it 💖"},
+      {name:"Tanya L.", text:"Game experience next level ho gaya! 🎮"}
+    ];
+    function showFeedbacks(){
+      const list = document.getElementById("feedbackList");
+      list.innerHTML = "";
+      const shuffled = demoFeedbacks.sort(()=>0.5-Math.random()).slice(0,5);
+      shuffled.forEach(f=>{
+        const div = document.createElement("div");
+        div.style.background="rgba(25,25,40,0.7)";
+        div.style.borderRadius="12px";
+        div.style.padding="15px";
+        div.style.color="#e0fdf4";
+        div.style.boxShadow="0 0 12px rgba(0,255,180,0.3)";
+        div.innerHTML=`<p>"${f.text}"</p><span style="display:block; text-align:right; color:#6ee7b7; font-size:13px;">- ${f.name}</span>`;
+        list.appendChild(div);
+      });
+    }
+    showFeedbacks();
+    function openFeedbackInput(){ document.getElementById("feedbackInputBox").style.display="block"; }
+    function submitFeedback(){
+      const feedback = document.getElementById("userFeedback").value.trim();
+      if(feedback.length===0) return;
+      document.getElementById("feedbackMessage").innerText = "Thanks for your feedback! 🙏";
+      document.getElementById("userFeedback").value="";
+      setTimeout(()=>{
+        document.getElementById("feedbackInputBox").style.display="none";
+        document.getElementById("feedbackMessage").innerText="";
+      },2000);
+    }
+
+    // ===== Android Back Button =====
+    document.addEventListener("keydown", function(event){
+      if(event.key==="Backspace" || event.key==="Escape"){
+        if(document.getElementById("instruction").style.display==="block") closePopup();
+        else if(document.getElementById("planDetail").style.display==="block") closeDetail();
+        else if(document.getElementById("securePayment").style.display==="block") closeSecure();
+        else if(document.getElementById("feedbackInputBox").style.display==="block"){
+          document.getElementById("feedbackInputBox").style.display="none";
+        }
+      }
+    });
   </script>
+
 </body>
 </html>
