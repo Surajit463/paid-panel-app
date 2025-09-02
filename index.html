@@ -343,6 +343,56 @@
     © 2025 FF Panel Store | All Rights Reserved
   </footer>
 
+
+<script>
+let selectedPlanAmount = 0;
+
+function openDetail(name, price){
+  document.getElementById("dName").innerText = name;
+  document.getElementById("dPrice").innerText = "₹" + price;
+  document.getElementById("dFeatures").innerHTML = "<li>95% Headshot Rate</li><li>AWM Aimbot</li><li>Sniper Fast Switch</li><li>Player Location</li>";
+  document.getElementById("planDetail").style.display = "block";
+  selectedPlanAmount = price; // store amount for payment
+}
+
+function openSecure(){
+  document.getElementById("planDetail").style.display="none";
+  document.getElementById("securePayment").style.display="block";
+
+  const upiLink = document.getElementById("upiLink");
+  upiLink.onclick = function(){
+    const payeeAddress = "8822612366@upi"; 
+    const payeeName = "FF Sensi Store"; 
+    const transactionNote = "Plan Payment";
+
+    const upiURI = `upi://pay?pa=${payeeAddress}&pn=${encodeURIComponent(payeeName)}&am=${selectedPlanAmount}&cu=INR&tn=${encodeURIComponent(transactionNote)}`;
+
+    document.getElementById("loadingBtn").style.display = "inline-block";
+    window.location.href = upiURI;
+
+    setTimeout(()=>{
+      document.getElementById("loadingBtn").style.display = "none";
+      document.getElementById("verifyBtn").style.display = "inline-block";
+    }, 3000);
+  }
+}
+
+function showKeyInput(){ document.getElementById("keyInputBox").style.display="block"; }
+
+function openPanel(){
+  const key = document.getElementById("userKey").value.trim();
+  if(key === "SENSI123"){
+    alert("✅ Panel Opened! Enjoy your features.");
+    document.getElementById("keyMessage").innerText="";
+  } else {
+    document.getElementById("keyMessage").innerText="❌ Invalid Key!";
+  }
+}
+</script>
+
+
+
+
   <script>
     document.getElementById("deviceName").innerText = navigator.userAgent;
 
