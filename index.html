@@ -774,82 +774,76 @@
       const link = encodeURIComponent(document.getElementById('referralLink').textContent);
       const message = encodeURIComponent('Check out this awesome FF Panel! ');
       const fullLink = message + link;
-      
+
       let shareUrl;
-      
       switch(app) {
-        case 'whatsapp':
-          shareUrl = `${scheme}${fullLink}`;
-          break;
-        case 'facebook':
-          shareUrl = `${scheme}${link}&quote=${message}`;
-          break;
-        case 'messenger':
-          shareUrl = `${scheme}${link}`;
-          break;
-        case 'instagram':
-          // Instagram doesn't support direct sharing via URL
-          // Fall back to copy functionality
-          copyReferralLink();
-          return;
-        case 'telegram':
-          shareUrl = `${scheme}${link}&text=${message}`;
-          break;
-        case 'twitter':
-          shareUrl = `${scheme}${fullLink}`;
-          break;
-        case 'snapchat':
-          shareUrl = `${scheme}${fullLink}`;
-          break;
-        case 'messages':
-          shareUrl = `${scheme}${fullLink}`;
-          break;
-        case 'gmail':
-          shareUrl = `${scheme}${fullLink}`;
-          break;
-        case 'email':
-          shareUrl = `${scheme}${fullLink}`;
-          break;
-        default:
-          // For other apps, just copy to clipboard
-          copyReferralLink();
-          return;
+        case 'whatsapp': shareUrl = `${scheme}${fullLink}`; break;
+        case 'facebook': shareUrl = `${scheme}${link}&quote=${message}`; break;
+        case 'telegram': shareUrl = `${scheme}${link}&text=${message}`; break;
+        default: shareUrl = `${scheme}${fullLink}`; break;
       }
-      
-      // Try to open the app directly
-      window.location.href = shareUrl;
-      
-      // Fallback - if app is not installed, offer to copy after a delay
-      setTimeout(function() {
-        if (!document.hidden) {
-          // App didn't open, offer copy option
-          if (confirm(`${app} app not found. Copy link to clipboard instead?`)) {
-            copyReferralLink();
-          }
-        }
-      }, 1000);
+
+      // ✅ Safer redirect
+      let tempLink = document.createElement("a");
+      tempLink.href = shareUrl;
+      tempLink.target = "_blank";
+      document.body.appendChild(tempLink);
+      tempLink.click();
+      tempLink.remove();
+
+      // Fallback
+      setTimeout(() => {
+        if (!document.hidden) copyReferralLink();
+      }, 1500);
     }
+
 
     // Copy referral link to clipboard
     function copyReferralLink() {
-      const link = document.getElementById('referralLink').textContent;
-      navigator.clipboard.writeText(link).then(() => {
-        alert('Referral link copied to clipboard!');
+      const referralLink = document.getElementById("referralLink").textContent;
+      navigator.clipboard.writeText(referralLink).then(() => {
+        showCopiedMessage();
       });
     }
 
+    function showCopiedMessage() {
+      let msg = document.createElement("div");
+      msg.textContent = "Copied!";
+      msg.style.position = "fixed";
+      msg.style.bottom = "20px";
+      msg.style.left = "50%";
+      msg.style.transform = "translateX(-50%)";
+      msg.style.background = "#6ee7b7";
+      msg.style.color = "#000";
+      msg.style.padding = "8px 16px";
+      msg.style.borderRadius = "8px";
+      msg.style.fontWeight = "bold";
+      msg.style.boxShadow = "0 4px 10px rgba(0,0,0,0.2)";
+      msg.style.zIndex = "9999";
+      document.body.appendChild(msg);
+
+      setTimeout(() => {
+        msg.remove();
+      }, 1500); // 1.5 second ke baad gayab
+    }
+
+
     // Update referral progress (demo functionality)
     function updateReferralProgress() {
-      // This would normally come from your backend
-      const friendsCount = Math.min(2, Math.floor(Math.random() * 3)); // Random 0-2 for demo
+      const friendsCount = 0; // Hamesha zero fix kar diya
       document.getElementById('friendsCount').textContent = friendsCount;
       document.getElementById('progressBar').style.width = (friendsCount / 2 * 100) + '%';
-      
+
+      // Ye condition kabhi true nahi hogi
       if (friendsCount >= 2) {
         document.getElementById('rewardStatus').textContent = 'Congratulations! You earned 1 month FREE!';
         document.getElementById('rewardStatus').style.color = '#6ee7b7';
+      } else {
+        document.getElementById('rewardStatus').textContent = 'Refer 2 friends to unlock 1 month FREE!';
+        document.getElementById('rewardStatus').style.color = '#93c5fd';
       }
     }
+
 
     // Initialize referral progress
     updateReferralProgress();
