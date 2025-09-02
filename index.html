@@ -367,7 +367,7 @@
         fList.appendChild(liClone);
       });
 
-      selectedUPI = `upi://pay?pa=surajit0923b-2@okhdfcbank&pn=FF%20Sensi&am=${price}&cu=INR`;
+      selectedUPI = `upi://pay?pa=surajit0923b-2@okhdfcbank&pn=FF%20Panel&am=${price}&cu=INR`;
       document.getElementById("planDetail").style.display = "block";
     }
 
@@ -378,8 +378,8 @@
     function openSecure(){
       document.getElementById("upiLink").href = selectedUPI;
       document.getElementById("securePayment").style.display = "block";
-      document.getElementById("loadingBtn").style.display = "block";
-    }
+      document.getElementById("loadingBtn").style.display = "none"; // initially hide
+}
 
     function closeSecure(){
       document.getElementById("securePayment").style.display = "none";
