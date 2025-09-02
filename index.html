@@ -6,20 +6,33 @@
   <title>FF Sensi Store</title>
   <style>
     body {
-      margin: 0; font-family: 'Poppins', sans-serif;
+      margin: 0; 
+      font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #0a0a0f, #1b1b29);
-      color: #fff; overflow-x: hidden;
+      color: #fff; 
+      overflow-x: hidden;
+      padding-bottom: 70px; /* Space for fixed tabs */
     }
 
     /* ===== Logo Intro ===== */
     #logoScreen {
-      position: fixed; top:0; left:0; width:100%; height:100%;
-      background:#000; display:flex; align-items:center; justify-content:center;
-      flex-direction:column; z-index:10000;
-      animation: fadeOut 1s ease forwards; animation-delay:3s;
+      position: fixed; 
+      top:0; 
+      left:0; 
+      width:100%; 
+      height:100%;
+      background:#000; 
+      display:flex; 
+      align-items:center; 
+      justify-content:center;
+      flex-direction:column; 
+      z-index:10000;
+      animation: fadeOut 1s ease forwards; 
+      animation-delay:3s;
     }
     #logoScreen h1 {
-      font-size: 40px; font-weight: 800;
+      font-size: 40px; 
+      font-weight: 800;
       color:#ff004f;
       text-shadow:0 0 20px #ff004f,0 0 40px #ff004f;
       animation: glow 1.5s infinite alternate;
@@ -32,141 +45,121 @@
       to { opacity:0; visibility:hidden; }
     }
 
-    /* ===== Instruction Popup ===== */
-    #instruction {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.75);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 9999;
-    }
-    .popup {
-      background: rgba(25,25,40,0.7);
-      backdrop-filter: blur(12px);
-      border: 2px solid rgba(110,231,183,0.5);
-      border-radius: 16px;
-      padding: 25px 20px;
-      max-width: 340px;
-      text-align: center;
-      box-shadow: 0 0 25px rgba(0,255,200,0.35);
-      animation: zoomIn 0.6s ease;
-      position: relative;
-    }
-    .popup h2 {
-      margin-bottom: 14px;
-      font-size: 20px;
-      color: #6ee7b7;
-      text-shadow: 0 0 8px #00ffcc;
-    }
-    .steps p {
-      margin: 8px 0;
-      font-size: 14px;
-      opacity: 0.95;
-      color: #e0fdf4;
-    }
-    .close-btn {
-      position: absolute; top: 20px; right: 25px;
-      background: linear-gradient(135deg,#ff4d6d,#ff1e42);
-      border: none; border-radius: 50%;
-      color: #fff; width: 34px; height: 34px;
-      font-size: 18px; font-weight: bold;
-      cursor: pointer; box-shadow: 0 0 12px rgba(255,77,109,0.6);
-      transition: 0.3s;
-    }
-    .close-btn:hover { transform: rotate(90deg) scale(1.1); }
-    @keyframes zoomIn {
-      from { transform: scale(0.7); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-
-    /* Floating Help Button */
-    #helpBtn {
+    /* ===== Tabs Navigation ===== */
+    .tabs {
+      display: flex;
+      justify-content: space-around;
       position: fixed;
-      bottom: 80px; right: 20px;
-      width: 55px; height: 55px;
-      background: linear-gradient(135deg,#ff4d6d,#ff1e42);
-      color: #fff;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px; font-weight: bold;
-      cursor: pointer; z-index: 99999;
-      box-shadow: 0 0 15px rgba(255,77,109,0.6);
-      user-select: none;
-    }
-
-    /* FAQ Popup */
-    #faqPopup {
-      display:none;
-      position: fixed; top:0; left:0;
-      width:100%; height:100%;
-      background: rgba(0,0,0,0.75);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 10000;
-    }
-    .faq-box {
+      bottom: 0;
+      left: 0;
+      right: 0;
       background: rgba(25,25,40,0.95);
-      padding: 25px;
-      border-radius: 16px;
-      max-width: 360px;
-      width: 85%;
-      box-shadow: 0 0 25px rgba(0,255,200,0.3);
-      color: #e0fdf4;
-      position: relative;
-      animation: zoomIn 0.5s ease;
+      backdrop-filter: blur(10px);
+      padding: 10px 0;
+      z-index: 9999;
+      border-top: 1px solid rgba(110,231,183,0.3);
     }
-    .faq-box h2 { color:#6ee7b7; margin-bottom:15px; text-align:center; }
-    .faq-box ul { list-style:none; padding:0; font-size:14px; }
-    .faq-box li { margin:12px 0; line-height:1.4; }
-    .close-faq {
-      position:absolute; top:15px; right:15px;
-      background:#ff1e42; border:none; border-radius:50%;
-      width:30px; height:30px; color:#fff;
-      font-size:18px; font-weight:bold;
-      cursor:pointer;
+    .tab {
+      padding: 10px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      text-align: center;
+      flex: 1;
+      margin: 0 5px;
+      border: 1px solid rgba(110,231,183,0.3);
     }
-
+    .tab.active {
+      background: linear-gradient(135deg, #6ee7b7, #00ffcc);
+      color: #000;
+      box-shadow: 0 0 15px rgba(0,255,200,0.4);
+    }
+    .tab-content {
+      display: none;
+      padding: 15px;
+    }
+    .tab-content.active {
+      display: block;
+    }
 
     /* ===== Header ===== */
     header {
-      display: flex; justify-content: flex-end; padding: 12px 18px;
-      font-size: 13px; opacity: 0.8;
+      display: flex; 
+      justify-content: flex-end; 
+      padding: 12px 18px;
+      font-size: 13px; 
+      opacity: 0.8;
     }
 
     h1 {
-      text-align: center; font-size: 26px; margin-top: 10px;
-      color: #6ee7b7; text-shadow: 0 0 6px #00ffcc;
+      text-align: center; 
+      font-size: 26px; 
+      margin-top: 10px;
+      color: #6ee7b7; 
+      text-shadow: 0 0 6px #00ffcc;
     }
 
     /* ===== Plans ===== */
     .plans {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 18px; padding: 25px;
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px; 
+      padding: 25px;
     }
     .plan {
       background: linear-gradient(180deg,#1b1b29,#12121a);
-      border-radius: 14px; padding: 20px; text-align: center;
+      border-radius: 14px; 
+      padding: 20px; 
+      text-align: center;
       box-shadow: 0 0 15px rgba(0,255,180,0.2);
       transition: transform .3s;
       animation: fadeIn 0.7s ease both;
       cursor: pointer;
     }
-    .plan:hover { transform: translateY(-5px); }
-    .plan h3 { margin-bottom: 8px; font-size: 18px; color:#6ee7b7; }
-    .price { font-size: 19px; margin: 8px 0; font-weight: bold; }
-    .strike { text-decoration: line-through; color: #999; font-size: 13px; }
+    .plan:hover { 
+      transform: translateY(-5px); 
+    }
+    .plan h3 { 
+      margin-bottom: 8px; 
+      font-size: 18px; 
+      color:#6ee7b7; 
+    }
+    .price { 
+      font-size: 19px; 
+      margin: 8px 0; 
+      font-weight: bold; 
+    }
+    .strike { 
+      text-decoration: line-through; 
+      color: #999; 
+      font-size: 13px; 
+    }
 
     .plan ul {
-      list-style: none; padding:0; margin:15px 0 0;
-      text-align:left; font-size: 13px;
+      list-style: none; 
+      padding:0; 
+      margin:15px 0 0;
+      text-align:left; 
+      font-size: 13px;
     }
     .plan li {
-      margin-bottom: 8px; padding-left: 26px; position: relative;
-      opacity:0; transform: translateX(-30px);
+      margin-bottom: 8px; 
+      padding-left: 26px; 
+      position: relative;
+      opacity:0; 
+      transform: translateX(-30px);
     }
     .plan li::before {
-      content:"✔"; position:absolute; left:0; color:#6ee7b7; font-weight:bold;
+      content:"✔"; 
+      position:absolute; 
+      left:0; 
+      color:#6ee7b7; 
+      font-weight:bold;
     }
     .plan li.show {
-      opacity:1; transform:translateX(0);
+      opacity:1; 
+      transform:translateX(0);
       transition: all 0.4s ease;
     }
     .plan li span.icon {
@@ -176,44 +169,106 @@
 
     /* ===== Detail Screen ===== */
     #planDetail, #securePayment {
-      display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:#0a0a0f; z-index:10001; overflow-y:auto;
+      display:none; 
+      position:fixed; 
+      top:0; 
+      left:0; 
+      width:100%; 
+      height:100%;
+      background:#0a0a0f; 
+      z-index:10001; 
+      overflow-y:auto;
       animation: fadeIn 0.5s ease;
       padding: 20px;
     }
     .detail-box {
-      max-width: 400px; margin:40px auto; background:#1b1b29; padding:20px;
-      border-radius:16px; box-shadow:0 0 25px rgba(0,255,200,0.25);
+      max-width: 400px; 
+      margin:40px auto; 
+      background:#1b1b29; 
+      padding:20px;
+      border-radius:16px; 
+      box-shadow:0 0 25px rgba(0,255,200,0.25);
     }
-    .detail-box h2 { color:#6ee7b7; margin-bottom:10px; }
-    .detail-box p { margin:6px 0; font-size:14px; }
-    .detail-box ul { list-style:none; padding:0; margin:15px 0; }
-    .detail-box li { margin-bottom:10px; position:relative; padding-left:22px; }
-    .detail-box li::before { content:"✔"; position:absolute; left:0; color:#6ee7b7; }
+    .detail-box h2 { 
+      color:#6ee7b7; 
+      margin-bottom:10px; 
+    }
+    .detail-box p { 
+      margin:6px 0; 
+      font-size:14px; 
+    }
+    .detail-box ul { 
+      list-style:none; 
+      padding:0; 
+      margin:15px 0; 
+    }
+    .detail-box li { 
+      margin-bottom:10px; 
+      position:relative; 
+      padding-left:22px; 
+    }
+    .detail-box li::before { 
+      content:"✔"; 
+      position:absolute; 
+      left:0; 
+      color:#6ee7b7; 
+    }
     .btn {
-      display:inline-block; padding:10px 18px; background:#6ee7b7; 
-      color:#000; border-radius:10px; font-weight:bold; text-decoration:none;
-      margin-top:15px; text-align:center;
+      display:inline-block; 
+      padding:10px 18px; 
+      background:#6ee7b7; 
+      color:#000; 
+      border-radius:10px; 
+      font-weight:bold; 
+      text-decoration:none;
+      margin-top:15px; 
+      text-align:center;
       box-shadow:0 0 12px rgba(0,255,200,0.4);
       cursor: pointer;
     }
-    .btn:hover { background:#00ffcc; }
+    .btn:hover { 
+      background:#00ffcc; 
+    }
     .back-btn {
-      display:inline-block; margin-top:15px; font-size:13px; color:#aaa; cursor:pointer;
+      display:inline-block; 
+      margin-top:15px; 
+      font-size:13px; 
+      color:#aaa; 
+      cursor:pointer;
     }
 
     /* ===== Secure Payment Screen ===== */
     .secure-box {
-      max-width:420px; margin:50px auto; background:#1b1b29; padding:25px;
-      border-radius:16px; text-align:center;
+      max-width:420px; 
+      margin:50px auto; 
+      background:#1b1b29; 
+      padding:25px;
+      border-radius:16px; 
+      text-align:center;
       box-shadow:0 0 25px rgba(0,255,200,0.25);
     }
-    .secure-box h2 { color:#6ee7b7; margin-bottom:10px; }
-    .secure-box p { font-size:14px; margin:8px 0; color:#ccc; }
-    .logos { display:flex; justify-content:center; gap:15px; margin:15px 0; }
+    .secure-box h2 { 
+      color:#6ee7b7; 
+      margin-bottom:10px; 
+    }
+    .secure-box p { 
+      font-size:14px; 
+      margin:8px 0; 
+      color:#ccc; 
+    }
+    .logos { 
+      display:flex; 
+      justify-content:center; 
+      gap:15px; 
+      margin:15px 0; 
+    }
     .logos span {
-      background:#fff; color:#000; font-weight:bold; padding:6px 10px;
-      border-radius:6px; font-size:13px;
+      background:#fff; 
+      color:#000; 
+      font-weight:bold; 
+      padding:6px 10px;
+      border-radius:6px; 
+      font-size:13px;
     }
 
     .loading-btn, #verifyBtn {
@@ -229,25 +284,223 @@
     }
     .loading-btn::before {
       content:"";
-      width:18px; height:18px;
+      width:18px; 
+      height:18px;
       border:3px solid #00ffcc;
       border-top:3px solid transparent;
       border-radius:50%;
-      position:absolute; left:12px; top:50%;
+      position:absolute; 
+      left:12px; 
+      top:50%;
       transform:translateY(-50%);
       animation: spin 1s linear infinite;
     }
     @keyframes spin {
-      100% { transform:translateY(-50%) rotate(360deg); }
+      100% { 
+        transform:translateY(-50%) rotate(360deg); 
+      }
     }
 
     footer {
-      text-align: center; padding: 12px; font-size: 12px; color: #888;
-      margin-top: 20px; border-top: 1px solid #222;
+      text-align: center; 
+      padding: 12px; 
+      font-size: 12px; 
+      color: #888;
+      margin-top: 20px; 
+      border-top: 1px solid #222;
     }
 
     /* ===== Feedback Section ===== */
-    #feedbackSection h2 { color:#6ee7b7; margin-bottom:12px; }
+    #feedbackSection h2 { 
+      color:#6ee7b7; 
+      margin-bottom:12px; 
+    }
+
+    /* ===== Refer Tab Styles ===== */
+    .refer-container {
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .refer-section {
+      background: rgba(25,25,40,0.7);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 15px rgba(0,255,200,0.2);
+    }
+    .refer-section h3 {
+      color: #6ee7b7;
+      margin-top: 0;
+    }
+    .refer-steps {
+      list-style-type: none;
+      padding: 0;
+    }
+    .refer-steps li {
+      margin-bottom: 10px;
+      padding-left: 25px;
+      position: relative;
+    }
+    .refer-steps li::before {
+      content: "➡️";
+      position: absolute;
+      left: 0;
+    }
+    .app-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .app-item {
+      background: rgba(110,231,183,0.1);
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .app-item:hover {
+      background: rgba(110,231,183,0.3);
+    }
+    .app-icon {
+      font-size: 30px;
+      margin-bottom: 8px;
+    }
+    .referral-link {
+      background: rgba(255,255,255,0.1);
+      padding: 10px;
+      border-radius: 8px;
+      margin: 15px 0;
+      word-break: break-all;
+      font-size: 14px;
+    }
+    .copy-btn {
+      background: #6ee7b7;
+      color: #000;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .reward-status {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(110,231,183,0.2);
+      border-radius: 10px;
+      text-align: center;
+    }
+    
+    /* Floating Help Button */
+    #helpBtn {
+      position: fixed;
+      bottom: 80px; 
+      right: 20px;
+      width: 55px; 
+      height: 55px;
+      background: linear-gradient(135deg,#ff4d6d,#ff1e42);
+      color: #fff;
+      border-radius: 50%;
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      font-size: 24px; 
+      font-weight: bold;
+      cursor: pointer; 
+      z-index: 99999;
+      box-shadow: 0 0 15px rgba(255,77,109,0.6);
+      user-select: none;
+    }
+
+    /* FAQ Popup */
+    #faqPopup {
+      display: none;
+      position: fixed; 
+      top:0; 
+      left:0;
+      width:100%; 
+      height:100%;
+      background: rgba(0,0,0,0.75);
+      z-index: 99999999;
+    }
+    .faq-box {
+      background: rgba(25,25,40,0.95);
+      padding: 25px;
+      border-radius: 16px;
+      max-width: 360px;
+      width: 85%;
+      box-shadow: 0 0 25px rgba(0,255,200,0.3);
+      color: #e0fdf4;
+      position: relative;
+      animation: zoomIn 0.5s ease;
+      margin: 0 auto;
+      margin-top: 50px;
+    }
+    .faq-box h2 { 
+      color:#6ee7b7; 
+      margin-bottom:15px; 
+      text-align:center; 
+    }
+    .faq-box ul { 
+      list-style:none; 
+      padding:0; 
+      font-size:14px; 
+    }
+    .faq-box li { 
+      margin:12px 0; 
+      line-height:1.4; 
+    }
+    .close-faq {
+      position:absolute; 
+      top:15px; 
+      right:15px;
+      background:#ff1e42; 
+      border:none; 
+      border-radius:50%;
+      width:30px; 
+      height:30px; 
+      color:#fff;
+      font-size:18px; 
+      font-weight:bold;
+      cursor:pointer;
+    }
+    
+    .faq-box ul { 
+      list-style: none; 
+      padding: 0; 
+    }
+    .faq-box li {
+      margin: 15px 0;
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.05);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    .faq-q { 
+      font-weight: bold; 
+      color: #ffcc00; 
+    }
+    .faq-a { 
+      font-weight: bold; 
+      color: #00ff99; 
+    }
+    
+    /* Animation for tab content */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes zoomIn {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -258,244 +511,354 @@
     <p style="color:#aaa;margin-top:10px;">Next Level ff panel 🎮</p>
   </div>
 
-  <!-- ===== Instruction Popup ===== -->
-  <div id="instruction">
-    <div class="popup">
-      <button class="close-btn" onclick="closePopup()">×</button>
-      <h2>📖 How to Buy</h2>
-      <div class="steps">
-        <p>1️⃣ Apna <b>Plan</b> select karo</p>
-        <p>2️⃣ <b>Buy Now</b> dabao</p>
-        <p>3️⃣ <b>Secure Payment</b> screen open hoga</p>
-        <p>4️⃣ Proceed → UPI App redirect hoga ✅</p>
-        <p>5️⃣ Payment complete hone ke baad ek <b>Key</b> milega</p>
-        <p>6️⃣ Key daal ke <b>Open Panel</b> pe click karo, panel open ho jayega 🔑</p>
-      </div>
-    </div>
-  </div>
-
   <!-- ===== Header ===== -->
   <header>
     <div id="deviceName">Detecting...</div>
   </header>
 
-  <h1>🔥 Get best ff panel 🔥</h1>
-
-  <!-- ===== Plans ===== -->
-  <section class="plans">
-    <div class="plan" onclick="openDetail('1 Month Plan','599')">
-      <h3>1 Month</h3>
-      <div class="price"><span class="strike">₹799</span><br> ₹599</div>
-      <ul>
-        <li><span class="icon">🎯</span>95% Headshot Rate</li>
-        <li><span class="icon">🔫</span>AWM Aimbot</li>
-        <li><span class="icon">⚡</span>Sniper Fast Switch</li>
-        <li><span class="icon">📍</span>Player Location</li>
-        <li><span class="icon">⏳</span>1 Month Validity</li>
-      </ul>
-    </div>
-    <div class="plan" onclick="openDetail('2 Month Plan','1159')">
-      <h3>2 Month</h3>
-      <div class="price"><span class="strike">₹1399</span><br> ₹1159</div>
-      <ul>
-        <li><span class="icon">🎯</span>95% Headshot Rate</li>
-        <li><span class="icon">🔫</span>AWM Aimbot</li>
-        <li><span class="icon">⚡</span>Sniper Fast Switch</li>
-        <li><span class="icon">📍</span>Player Location</li>
-        <li><span class="icon">⏳</span>2 Month Support & Updates</li>
-      </ul>
-    </div>
-    <div class="plan" onclick="openDetail('3 Month Plan','1699')">
-      <h3>3 Month</h3>
-      <div class="price"><span class="strike">₹1999</span><br> ₹1699</div>
-      <ul>
-        <li><span class="icon">🎯</span>95% Headshot Rate</li>
-        <li><span class="icon">🔫</span>AWM Aimbot</li>
-        <li><span class="icon">⚡</span>Sniper Fast Switch</li>
-        <li><span class="icon">📍</span>Player Location</li>
-        <li><span class="icon">⏳</span>3 Month Support & Updates</li>
-      </ul>
-    </div>
-    <div class="plan" onclick="openDetail('Permanent Plan','2900')">
-      <h3>Permanent</h3>
-      <div class="price">₹2900</div>
-      <ul>
-        <li><span class="icon">🎯</span>95% Headshot Rate</li>
-        <li><span class="icon">🔫</span>AWM Aimbot</li>
-        <li><span class="icon">⚡</span>Sniper Fast Switch</li>
-        <li><span class="icon">📍</span>Player Location</li>
-        <li><span class="icon">🎮</span>Lifetime Access</li>
-        <li><span class="icon">💻</span>All Premium Features Included</li>
-        <li><span class="icon">👑</span>VIP Priority Support</li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- ===== Plan Detail Screen ===== -->
-  <div id="planDetail">
-    <div class="detail-box">
-      <h2 id="dName"></h2>
-      <p id="dPrice"></p>
-      <ul id="dFeatures"></ul>
-      <a class="btn" onclick="openSecure()">Buy Now</a>
-      <div class="back-btn" onclick="closeDetail()">← Back to Plans</div>
-    </div>
+  <!-- ===== Tabs Navigation ===== -->
+  <div class="tabs">
+    <div class="tab active" data-tab="panel">Panel</div>
+    <div class="tab" data-tab="refer">Refer</div>
   </div>
 
-  <!-- ===== Secure Payment Screen ===== -->
-  <div id="securePayment">
-    <div class="secure-box">
-      <h2>🔒 Secure Payment</h2>
-      <p>Your payment is 100% safe & encrypted.</p>
-      <p>We never store your UPI details.</p>
-      <div class="logos">
-        <span>GPay</span>
-        <span>PhonePe</span>
-        <span>Paytm</span>
-        <span>BHIM</span>
-      </div>
-      <a id="upiLink" class="btn">Proceed to Pay</a>
-      <button id="loadingBtn" class="loading-btn">Redirecting to UPI App...</button>
-      <button id="verifyBtn" class="btn">✅ Verify Payment</button>
-      <div class="back-btn" onclick="closeSecure()">← Back</div>
+  <!-- ===== Panel Tab ===== -->
+  <div id="panelTab" class="tab-content active">
+    <h1>🔥 Get best ff panel 🔥</h1>
 
-      <!-- ===== Enter Key Section ===== -->
-      <div id="enterKeySection" style="text-align:center; margin-top:25px;">
-        <button class="btn" onclick="showKeyInput()">Enter Your Key 🔑</button>
-        <div id="keyInputBox" style="display:none; margin-top:15px;">
-          <input type="text" id="userKey" placeholder="Enter your key" style="padding:10px; border-radius:10px; border:none; width:80%; text-align:center;">
-          <br>
-          <button class="btn" onclick="openPanel()" style="margin-top:12px;">Open Panel</button>
-          <div id="keyMessage" style="margin-top:10px; color:#ff4d6d; font-weight:bold;"></div>
-          <p style="margin-top:10px; font-size:12px; color:#aaa;">⚠ Key sirf plan buy karne ke baad milegi</p>
+    <!-- ===== Plans ===== -->
+    <section class="plans">
+      <div class="plan" onclick="openDetail('1 Month Plan','599')">
+        <h3>1 Month</h3>
+        <div class="price"><span class="strike">₹799</span><br> ₹599</div>
+        <ul>
+          <li><span class="icon">🎯</span>95% Headshot Rate</li>
+          <li><span class="icon">🔫</span>AWM Aimbot</li>
+          <li><span class="icon">⚡</span>Sniper Fast Switch</li>
+          <li><span class="icon">📍</span>Player Location</li>
+          <li><span class="icon">⏳</span>1 Month Validity</li>
+        </ul>
+      </div>
+      <div class="plan" onclick="openDetail('2 Month Plan','1159')">
+        <h3>2 Month</h3>
+        <div class="price"><span class="strike">₹1399</span><br> ₹1159</div>
+        <ul>
+          <li><span class="icon">🎯</span>95% Headshot Rate</li>
+          <li><span class="icon">🔫</span>AWM Aimbot</li>
+          <li><span class="icon">⚡</span>Sniper Fast Switch</li>
+          <li><span class="icon">📍</span>Player Location</li>
+          <li><span class="icon">⏳</span>2 Month Support & Updates</li>
+        </ul>
+      </div>
+      <div class="plan" onclick="openDetail('3 Month Plan','1699')">
+        <h3>3 Month</h3>
+        <div class="price"><span class="strike">₹1999</span><br> ₹1699</div>
+        <ul>
+          <li><span class="icon">🎯</span>95% Headshot Rate</li>
+          <li><span class="icon">🔫</span>AWM Aimbot</li>
+          <li><span class="icon">⚡</span>Sniper Fast Switch</li>
+          <li><span class="icon">📍</span>Player Location</li>
+          <li><span class="icon">⏳</span>3 Month Support & Updates</li>
+        </ul>
+      </div>
+      <div class="plan" onclick="openDetail('Permanent Plan','2900')">
+        <h3>Permanent</h3>
+        <div class="price">₹2900</div>
+        <ul>
+          <li><span class="icon">🎯</span>95% Headshot Rate</li>
+          <li><span class="icon">🔫</span>AWM Aimbot</li>
+          <li><span class="icon">⚡</span>Sniper Fast Switch</li>
+          <li><span class="icon">📍</span>Player Location</li>
+          <li><span class="icon">🎮</span>Lifetime Access</li>
+          <li><span class="icon">💻</span>All Premium Features Included</li>
+          <li><span class="icon">👑</span>VIP Priority Support</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== Plan Detail Screen ===== -->
+    <div id="planDetail">
+      <div class="detail-box">
+        <h2 id="dName"></h2>
+        <p id="dPrice"></p>
+        <ul id="dFeatures"></ul>
+        <a class="btn" onclick="openSecure()">Buy Now</a>
+        <div class="back-btn" onclick="closeDetail()">← Back to Plans</div>
+      </div>
+    </div>
+
+    <!-- ===== Secure Payment Screen ===== -->
+    <div id="securePayment">
+      <div class="secure-box">
+        <h2>🔒 Secure Payment</h2>
+        <p>Your payment is 100% safe & encrypted.</p>
+        <p>We never store your UPI details.</p>
+        <div class="logos">
+          <span>GPay</span>
+          <span>PhonePe</span>
+          <span>Paytm</span>
+          <span>BHIM</span>
+        </div>
+        <a id="upiLink" class="btn">Proceed to Pay</a>
+        <button id="loadingBtn" class="loading-btn">Redirecting to UPI App...</button>
+        <button id="verifyBtn" class="btn">✅ Verify Payment</button>
+        <div class="back-btn" onclick="closeSecure()">← Back</div>
+
+        <!-- ===== Enter Key Section ===== -->
+        <div id="enterKeySection" style="text-align:center; margin-top:25px;">
+          <button class="btn" onclick="showKeyInput()">Enter Your Key 🔑</button>
+          <div id="keyInputBox" style="display:none; margin-top:15px;">
+            <input type="text" id="userKey" placeholder="Enter your key" style="padding:10px; border-radius:10px; border:none; width:80%; text-align:center;">
+            <br>
+            <button class="btn" onclick="openPanel()" style="margin-top:12px;">Open Panel</button>
+            <div id="keyMessage" style="margin-top:10px; color:#ff4d6d; font-weight:bold;"></div>
+            <p style="margin-top:10px; font-size:12px; color:#aaa;">⚠ Key sirf plan buy karne ke baad milegi</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Feedback Section ===== -->
+    <section id="feedbackSection" style="padding:25px; text-align:center;">
+      <h2>💬 User Feedback</h2>
+      <div id="feedbackList" style="max-width:500px; margin:15px auto; display:flex; flex-direction:column; gap:15px;"></div>
+      <button class="btn" onclick="openFeedbackInput()">Send Feedback ✏️</button>
+      <div id="feedbackInputBox" style="display:none; margin-top:15px;">
+        <input type="text" id="userFeedback" placeholder="Write your feedback..." style="padding:10px; border-radius:10px; border:none; width:80%; text-align:center;">
+        <br>
+        <button class="btn" style="margin-top:10px;" onclick="submitFeedback()">Submit</button>
+        <div id="feedbackMessage" style="margin-top:10px; color:#6ee7b7; font-weight:bold;"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== Refer Tab ===== -->
+  <div id="referTab" class="tab-content">
+    <h1 style="text-align:center;">👥 Refer & Earn</h1>
+    
+    <div class="refer-container">
+      <div class="refer-section">
+        <h3>How to Refer</h3>
+        <ol class="refer-steps">
+          <li>Click on "Refer Now" button</li>
+          <li>Choose an app to share your referral link</li>
+          <li>Share the link with your friends</li>
+          <li>When 2 friends join using your link, you get 1 month FREE!</li>
+        </ol>
+        <div style="text-align:center; margin-top:20px;">
+          <button class="btn" onclick="showAppList()">Refer Now</button>
+        </div>
+      </div>
+
+      <div class="refer-section" id="appListSection" style="display:none;">
+        <h3>Choose App to Share</h3>
+        <div class="app-list" id="installedAppsList">
+          <!-- Apps will be dynamically added here -->
+        </div>
+      </div>
+
+      <div class="refer-section">
+        <h3>Your Referral Link</h3>
+        <div class="referral-link" id="referralLink">
+          https://ffpanel.store/ref/abc123xyz
+        </div>
+        <button class="copy-btn" onclick="copyReferralLink()">Copy Link</button>
+      </div>
+
+      <div class="refer-section">
+        <h3>Your Referral Progress</h3>
+        <div class="reward-status">
+          <p>Friends Joined: <span id="friendsCount">0</span>/2</p>
+          <div style="background:#1b1b29; height:20px; border-radius:10px; margin:10px 0;">
+            <div style="background:#6ee7b7; height:100%; width:0%; border-radius:10px; transition:width 1s;" id="progressBar"></div>
+          </div>
+          <p id="rewardStatus">Refer 2 friends to get 1 month FREE!</p>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ===== Feedback Section ===== -->
-  <section id="feedbackSection" style="padding:25px; text-align:center;">
-    <h2>💬 User Feedback</h2>
-    <div id="feedbackList" style="max-width:500px; margin:15px auto; display:flex; flex-direction:column; gap:15px;"></div>
-    <button class="btn" onclick="openFeedbackInput()">Send Feedback ✏️</button>
-    <div id="feedbackInputBox" style="display:none; margin-top:15px;">
-      <input type="text" id="userFeedback" placeholder="Write your feedback..." style="padding:10px; border-radius:10px; border:none; width:80%; text-align:center;">
-      <br>
-      <button class="btn" style="margin-top:10px;" onclick="submitFeedback()">Submit</button>
-      <div id="feedbackMessage" style="margin-top:10px; color:#6ee7b7; font-weight:bold;"></div>
+  <!-- ===== Floating Help Button ===== -->
+  <div id="helpBtn">?</div>
+
+  <!-- ===== FAQ Popup ===== -->
+  <div id="faqPopup">
+    <div class="faq-box">
+      <button class="close-faq" onclick="closeFAQ()">×</button>
+      <h2>💡 FAQ (Help & Guide)</h2>
+      <ul>
+        <li>
+          <span class="faq-q">🛒 Sawal:</span> Main plan kaise kharidu? <br>
+          <span class="faq-a">✅ Jawaab:</span> Apna plan select karke <b>Buy Now</b> button dabao.
+        </li>
+        <li>
+          <span class="faq-q">🔑 Sawal:</span> Panel kaise milega? <br>
+          <span class="faq-a">✅ Jawaab:</span> Payment ke baad aapko ek <b>Key</b> milegi .
+        </li>
+        <li>
+          <span class="faq-q">💳 Sawal:</span> Payment kaise karna hai? <br>
+          <span class="faq-a">✅ Jawaab:</span> UPI apps (GPay / PhonePe / Paytm) me se choose karke payment karo.
+        </li>
+        <li>
+          <span class="faq-q">🚀 Sawal:</span> Payment ke baad kya karna hai? <br>
+          <span class="faq-a">✅ Jawaab:</span> Apna key dal ke <b>Open Panel</b> dabao, panel turant unlock ho jayega.
+        </li>
+      </ul>
     </div>
-  </section>
-
-<!-- ===== Floating Help Button ===== -->
-<div id="helpBtn">?</div>
-
-<!-- ===== FAQ Popup ===== -->
-<div id="faqPopup">
-  <div class="faq-box">
-    <button class="close-faq" onclick="closeFAQ()">×</button>
-    <h2>❓ FAQ (Help)</h2>
-    <ul>
-      <li><b>Q:</b> Kaise Buy kare?<br><b>A:</b> Apna plan select karke <b>Buy Now</b> dabao.</li>
-      <li><b>Q:</b> Panel kaise milega?<br><b>A:</b> Payment complete hone ke baad ek <b>Key</b> milega.</li>
-      <li><b>Q:</b> Payment kaise kare?<br><b>A:</b> UPI app se GPay / PhonePe / Paytm choose karke payment karo.</li>
-      <li><b>Q:</b> Payment ke baad kya karna hai?<br><b>A:</b> Apna key enter karke <b>Open Panel</b> pe click karo, panel unlock ho jayega.</li>
-    </ul>
   </div>
-</div>
-
 
   <footer>
     © 2025 FF Panel Store | All Rights Reserved
   </footer>
 
-<script>
-document.getElementById("verifyBtn").onclick = function(){
-  const verifyBtn = document.getElementById("verifyBtn");
-  verifyBtn.style.display = "none"; // button hide
-  const loadingBtn = document.getElementById("loadingBtn");
-  loadingBtn.innerText = "Verifying Payment...";
-  loadingBtn.style.display = "inline-block";
-
-  // 30 sec wait
-  setTimeout(()=>{
-    loadingBtn.style.display = "none";
-    const msg = document.createElement("p");
-    msg.innerText = "📢 We will send you notification when we get payment.";
-    msg.style.color = "#6ee7b7";
-    msg.style.marginTop = "15px";
-    msg.style.fontWeight = "bold";
-    document.querySelector(".secure-box").appendChild(msg);
-
-    // 3 sec baad home page redirect
-    setTimeout(()=>{
-      window.location.href = "index.html"; // yahan apna homepage
-    }, 3000);
-
-  }, 30000); // 30 sec
-}
-
-</script>
-
-
-
-<script>
-let selectedPlanAmount = 0;
-
-function openDetail(name, price){
-  document.getElementById("dName").innerText = name;
-  document.getElementById("dPrice").innerText = "₹" + price;
-  document.getElementById("dFeatures").innerHTML = "<li>95% Headshot Rate</li><li>AWM Aimbot</li><li>Sniper Fast Switch</li><li>Player Location</li>";
-  document.getElementById("planDetail").style.display = "block";
-  selectedPlanAmount = price; // store amount for payment
-}
-
-function openSecure(){
-  document.getElementById("planDetail").style.display="none";
-  document.getElementById("securePayment").style.display="block";
-
-  const upiLink = document.getElementById("upiLink");
-  upiLink.onclick = function(){
-    const payeeAddress = "surajit0923b-2@okhdfcbank";  // अपना UPI ID
-    const payeeName = "FF Panel Store"; 
-    const transactionNote = "Plan Payment";
-
-    // ✅ UPI URI generate
-    const upiURI = `upi://pay?pa=${payeeAddress}&pn=${encodeURIComponent(payeeName)}&am=${selectedPlanAmount}&cu=INR&tn=${encodeURIComponent(transactionNote)}`;
-
-    // ✅ यहाँ href set करने से Mobile खुद UPI chooser list दिखाएगा
-    upiLink.setAttribute("href", upiURI);
-    upiLink.setAttribute("target", "_blank");
-
-    // Loading + Verify दिखाने का flow
-    document.getElementById("loadingBtn").style.display = "inline-block";
-    setTimeout(()=>{
-      document.getElementById("loadingBtn").style.display = "none";
-      document.getElementById("verifyBtn").style.display = "inline-block";
-    }, 3000);
-  }
-}
-
-
-function showKeyInput(){ document.getElementById("keyInputBox").style.display="block"; }
-
-function openPanel(){
-  const key = document.getElementById("userKey").value.trim();
-  if(key === "SENSI123"){
-    alert("✅ Panel Opened! Enjoy your features.");
-    document.getElementById("keyMessage").innerText="";
-  } else {
-    document.getElementById("keyMessage").innerText="❌ Invalid Key!";
-  }
-}
-</script>
-
-
-
-
   <script>
+    // Tab switching functionality
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Remove active class from all tabs
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        // Add active class to clicked tab
+        tab.classList.add('active');
+        
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        // Show the selected tab content
+        document.getElementById(tab.dataset.tab + 'Tab').classList.add('active');
+      });
+    });
+
+    // Show app list for referral
+    function showAppList() {
+      document.getElementById('appListSection').style.display = 'block';
+      detectInstalledApps();
+    }
+
+    // Detect installed apps on the device
+    function detectInstalledApps() {
+      const appsList = document.getElementById('installedAppsList');
+      appsList.innerHTML = '';
+      
+      // Common apps that might be installed
+      const possibleApps = [
+        { name: 'WhatsApp', icon: '💬', scheme: 'whatsapp://send?text=' },
+        { name: 'Facebook', icon: '📘', scheme: 'fb://sharer/?u=' },
+        { name: 'Messenger', icon: '💙', scheme: 'fb-messenger://share/?link=' },
+        { name: 'Instagram', icon: '📸', scheme: 'instagram://share?url=' },
+        { name: 'Telegram', icon: '📨', scheme: 'tg://msg_url?url=' },
+        { name: 'Twitter', icon: '🐦', scheme: 'twitter://post?message=' },
+        { name: 'Snapchat', icon: '👻', scheme: 'snapchat://share?text=' },
+        { name: 'Messages', icon: '✉️', scheme: 'sms://?body=' },
+        { name: 'Gmail', icon: '📧', scheme: 'googlegmail:///co?body=' },
+        { name: 'Email', icon: '📩', scheme: 'mailto:?body=' }
+      ];
+      
+      // Check which apps are likely installed
+      possibleApps.forEach(app => {
+        const appItem = document.createElement('div');
+        appItem.className = 'app-item';
+        appItem.innerHTML = `
+          <div class="app-icon">${app.icon}</div>
+          <div>${app.name}</div>
+        `;
+        
+        appItem.onclick = function() {
+          shareReferral(app.name.toLowerCase(), app.scheme);
+        };
+        
+        appsList.appendChild(appItem);
+      });
+    }
+
+    // Share referral link directly to the app
+    function shareReferral(app, scheme) {
+      const link = encodeURIComponent(document.getElementById('referralLink').textContent);
+      const message = encodeURIComponent('Check out this awesome FF Panel! ');
+      const fullLink = message + link;
+      
+      let shareUrl;
+      
+      switch(app) {
+        case 'whatsapp':
+          shareUrl = `${scheme}${fullLink}`;
+          break;
+        case 'facebook':
+          shareUrl = `${scheme}${link}&quote=${message}`;
+          break;
+        case 'messenger':
+          shareUrl = `${scheme}${link}`;
+          break;
+        case 'instagram':
+          // Instagram doesn't support direct sharing via URL
+          // Fall back to copy functionality
+          copyReferralLink();
+          return;
+        case 'telegram':
+          shareUrl = `${scheme}${link}&text=${message}`;
+          break;
+        case 'twitter':
+          shareUrl = `${scheme}${fullLink}`;
+          break;
+        case 'snapchat':
+          shareUrl = `${scheme}${fullLink}`;
+          break;
+        case 'messages':
+          shareUrl = `${scheme}${fullLink}`;
+          break;
+        case 'gmail':
+          shareUrl = `${scheme}${fullLink}`;
+          break;
+        case 'email':
+          shareUrl = `${scheme}${fullLink}`;
+          break;
+        default:
+          // For other apps, just copy to clipboard
+          copyReferralLink();
+          return;
+      }
+      
+      // Try to open the app directly
+      window.location.href = shareUrl;
+      
+      // Fallback - if app is not installed, offer to copy after a delay
+      setTimeout(function() {
+        if (!document.hidden) {
+          // App didn't open, offer copy option
+          if (confirm(`${app} app not found. Copy link to clipboard instead?`)) {
+            copyReferralLink();
+          }
+        }
+      }, 1000);
+    }
+
+    // Copy referral link to clipboard
+    function copyReferralLink() {
+      const link = document.getElementById('referralLink').textContent;
+      navigator.clipboard.writeText(link).then(() => {
+        alert('Referral link copied to clipboard!');
+      });
+    }
+
+    // Update referral progress (demo functionality)
+    function updateReferralProgress() {
+      // This would normally come from your backend
+      const friendsCount = Math.min(2, Math.floor(Math.random() * 3)); // Random 0-2 for demo
+      document.getElementById('friendsCount').textContent = friendsCount;
+      document.getElementById('progressBar').style.width = (friendsCount / 2 * 100) + '%';
+      
+      if (friendsCount >= 2) {
+        document.getElementById('rewardStatus').textContent = 'Congratulations! You earned 1 month FREE!';
+        document.getElementById('rewardStatus').style.color = '#6ee7b7';
+      }
+    }
+
+    // Initialize referral progress
+    updateReferralProgress();
+
+    // Rest of the existing JavaScript code...
     document.getElementById("deviceName").innerText = navigator.userAgent;
 
-    function closePopup(){ document.getElementById("instruction").style.display="none"; }
+    // REMOVED: Automatic FAQ popup on page load
+    // The instruction popup will now only show when the help button is clicked
 
     const featureLists = document.querySelectorAll(".plan li");
     window.addEventListener("scroll", ()=>{
@@ -557,18 +920,83 @@ function openPanel(){
     // ===== Android Back Button =====
     document.addEventListener("keydown", function(event){
       if(event.key==="Backspace" || event.key==="Escape"){
-        if(document.getElementById("instruction").style.display==="block") closePopup();
-        else if(document.getElementById("planDetail").style.display==="block") closeDetail();
+        if(document.getElementById("planDetail").style.display==="block") closeDetail();
         else if(document.getElementById("securePayment").style.display==="block") closeSecure();
         else if(document.getElementById("feedbackInputBox").style.display==="block"){
           document.getElementById("feedbackInputBox").style.display="none";
         }
+        else if(document.getElementById("appListSection").style.display==="block"){
+          document.getElementById("appListSection").style.display="none";
+        }
+        else if(document.getElementById("faqPopup").style.display==="flex"){
+          closeFAQ();
+        }
       }
     });
-  </script>
 
+    // Payment verification
+    document.getElementById("verifyBtn").onclick = function(){
+      const verifyBtn = document.getElementById("verifyBtn");
+      verifyBtn.style.display = "none"; // button hide
+      const loadingBtn = document.getElementById("loadingBtn");
+      loadingBtn.innerText = "Verifying Payment...";
+      loadingBtn.style.display = "inline-block";
 
-  <script>
+      // 30 sec wait
+      setTimeout(()=>{
+        loadingBtn.style.display = "none";
+        const msg = document.createElement("p");
+        msg.innerText = "📢 We will send you notification when we get payment.";
+        msg.style.color = "#6ee7b7";
+        msg.style.marginTop = "15px";
+        msg.style.fontWeight = "bold";
+        document.querySelector(".secure-box").appendChild(msg);
+
+        // 3 sec baad home page redirect
+        setTimeout(()=>{
+          window.location.href = "index.html"; // yahan apna homepage
+        }, 3000);
+
+      }, 30000); // 30 sec
+    }
+
+    let selectedPlanAmount = 0;
+
+    function openDetail(name, price){
+      document.getElementById("dName").innerText = name;
+      document.getElementById("dPrice").innerText = "₹" + price;
+      document.getElementById("dFeatures").innerHTML = "<li>95% Headshot Rate</li><li>AWM Aimbot</li><li>Sniper Fast Switch</li><li>Player Location</li>";
+      document.getElementById("planDetail").style.display = "block";
+      selectedPlanAmount = price; // store amount for payment
+    }
+
+    function openSecure(){
+      document.getElementById("planDetail").style.display="none";
+      document.getElementById("securePayment").style.display="block";
+
+      const upiLink = document.getElementById("upiLink");
+      upiLink.onclick = function(){
+        const payeeAddress = "surajit0923b-2@okhdfcbank";  // अपना UPI ID
+        const payeeName = "FF Panel Store"; 
+        const transactionNote = "Plan Payment";
+
+        // ✅ UPI URI generate
+        const upiURI = `upi://pay?pa=${payeeAddress}&pn=${encodeURIComponent(payeeName)}&am=${selectedPlanAmount}&cu=INR&tn=${encodeURIComponent(transactionNote)}`;
+
+        // ✅ यहाँ href set करने से Mobile खुद UPI chooser list दिखाएगा
+        upiLink.setAttribute("href", upiURI);
+        upiLink.setAttribute("target", "_blank");
+
+        // Loading + Verify दिखाने का flow
+        document.getElementById("loadingBtn").style.display = "inline-block";
+        setTimeout(()=>{
+          document.getElementById("loadingBtn").style.display = "none";
+          document.getElementById("verifyBtn").style.display = "inline-block";
+        }, 3000);
+      }
+    }
+
+    // FAQ functionality - NOW MANUAL ONLY
     const helpBtn = document.getElementById("helpBtn");   // Floating ? button
     const faqPopup = document.getElementById("faqPopup"); // Popup container
     const closeBtn = document.querySelector(".close-faq"); // Cross button
@@ -589,10 +1017,10 @@ function openPanel(){
         faqPopup.style.display = "none";
       }
     });
+
+    function closeFAQ() {
+      faqPopup.style.display = "none";
+    }
   </script>
-
-
-
-
 </body>
 </html>
