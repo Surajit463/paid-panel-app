@@ -361,21 +361,26 @@ function openSecure(){
 
   const upiLink = document.getElementById("upiLink");
   upiLink.onclick = function(){
-    const payeeAddress = "8822612366@upi"; 
-    const payeeName = "FF Sensi Store"; 
+    const payeeAddress = "surajit0923b-2@okhdfcbank";  // अपना UPI ID
+    const payeeName = "FF Panel Store"; 
     const transactionNote = "Plan Payment";
 
+    // ✅ UPI URI generate
     const upiURI = `upi://pay?pa=${payeeAddress}&pn=${encodeURIComponent(payeeName)}&am=${selectedPlanAmount}&cu=INR&tn=${encodeURIComponent(transactionNote)}`;
 
-    document.getElementById("loadingBtn").style.display = "inline-block";
-    window.location.href = upiURI;
+    // ✅ यहाँ href set करने से Mobile खुद UPI chooser list दिखाएगा
+    upiLink.setAttribute("href", upiURI);
+    upiLink.setAttribute("target", "_blank");
 
+    // Loading + Verify दिखाने का flow
+    document.getElementById("loadingBtn").style.display = "inline-block";
     setTimeout(()=>{
       document.getElementById("loadingBtn").style.display = "none";
       document.getElementById("verifyBtn").style.display = "inline-block";
     }, 3000);
   }
 }
+
 
 function showKeyInput(){ document.getElementById("keyInputBox").style.display="block"; }
 
