@@ -411,18 +411,9 @@ function openPanel(){
       });
     });
 
-    let selectedUPI = '';
-    function openDetail(name, price){
-      document.getElementById("dName").innerText = name;
-      document.getElementById("dPrice").innerText = "₹" + price;
-      document.getElementById("dFeatures").innerHTML = "<li>95% Headshot Rate</li><li>AWM Aimbot</li><li>Sniper Fast Switch</li><li>Player Location</li>";
-      document.getElementById("planDetail").style.display = "block";
-    }
+    
     function closeDetail(){ document.getElementById("planDetail").style.display="none"; }
-    function openSecure(){
-      document.getElementById("planDetail").style.display="none";
-      document.getElementById("securePayment").style.display="block";
-    }
+    
     function closeSecure(){ document.getElementById("securePayment").style.display="none"; }
 
     function showKeyInput(){ document.getElementById("keyInputBox").style.display="block"; }
