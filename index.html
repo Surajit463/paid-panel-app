@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FF Sensi Store</title>
+  <style>
+    body {
+      margin: 0; font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0a0a0f, #1b1b29);
+      color: #fff; overflow-x: hidden;
+    }
+
+    /* ===== Logo Intro ===== */
+    #logoScreen {
+      position: fixed; top:0; left:0; width:100%; height:100%;
+      background:#000; display:flex; align-items:center; justify-content:center;
+      flex-direction:column; z-index:10000;
+      animation: fadeOut 1s ease forwards; animation-delay:3s;
+    }
+    #logoScreen h1 {
+      font-size: 40px; font-weight: 800;
+      color:#ff004f;
+      text-shadow:0 0 20px #ff004f,0 0 40px #ff004f;
+      animation: glow 1.5s infinite alternate;
+    }
+    @keyframes glow {
+      from { text-shadow:0 0 10px #ff004f;}
+      to { text-shadow:0 0 30px #ff004f,0 0 60px #ff004f;}
+    }
+    @keyframes fadeOut {
+      to { opacity:0; visibility:hidden; }
+    }
+
+    /* ===== Instruction Popup ===== */
+    #instruction {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.75);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999;
+    }
+    .popup {
+      background: rgba(25,25,40,0.7);
+      backdrop-filter: blur(12px);
+      border: 2px solid rgba(110,231,183,0.5);
+      border-radius: 16px;
+      padding: 25px 20px;
+      max-width: 340px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(0,255,200,0.35);
+      animation: zoomIn 0.6s ease;
+    }
+    .popup h2 {
+      margin-bottom: 14px;
+      font-size: 20px;
+      color: #6ee7b7;
+      text-shadow: 0 0 8px #00ffcc;
+    }
+    .steps p {
+      margin: 8px 0;
+      font-size: 14px;
+      opacity: 0.95;
+      color: #e0fdf4;
+    }
+    .close-btn {
+      position: absolute; top: 20px; right: 25px;
+      background: linear-gradient(135deg,#ff4d6d,#ff1e42);
+      border: none; border-radius: 50%;
+      color: #fff; width: 34px; height: 34px;
+      font-size: 18px; font-weight: bold;
+      cursor: pointer; box-shadow: 0 0 12px rgba(255,77,109,0.6);
+      transition: 0.3s;
+    }
+    .close-btn:hover { transform: rotate(90deg) scale(1.1); }
+    @keyframes zoomIn {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* ===== Header ===== */
+    header {
+      display: flex; justify-content: flex-end; padding: 12px 18px;
+      font-size: 13px; opacity: 0.8;
+    }
+
+    h1 {
+      text-align: center; font-size: 26px; margin-top: 10px;
+      color: #6ee7b7; text-shadow: 0 0 6px #00ffcc;
+    }
+
+    /* ===== Plans ===== */
+    .plans {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px; padding: 25px;
+    }
+    .plan {
+      background: linear-gradient(180deg,#1b1b29,#12121a);
+      border-radius: 14px; padding: 20px; text-align: center;
+      box-shadow: 0 0 15px rgba(0,255,180,0.2);
+      transition: transform .3s;
+      animation: fadeIn 0.7s ease both;
+      cursor: pointer;
+    }
+    .plan:hover { transform: translateY(-5px); }
+    .plan h3 { margin-bottom: 8px; font-size: 18px; color:#6ee7b7; }
+    .price { font-size: 19px; margin: 8px 0; font-weight: bold; }
+    .strike { text-decoration: line-through; color: #999; font-size: 13px; }
+
+    /* ===== Plan Features ===== */
+    .plan ul {
+      list-style: none; padding:0; margin:15px 0 0;
+      text-align:left; font-size: 13px;
+    }
+    .plan li {
+      margin-bottom: 8px; padding-left: 26px; position: relative;
+      opacity:0; transform: translateX(-30px);
+    }
+    .plan li::before {
+      content:"✔"; position:absolute; left:0; color:#6ee7b7; font-weight:bold;
+    }
+    .plan li.show {
+      opacity:1; transform:translateX(0);
+      transition: all 0.4s ease;
+    }
+    .plan li span.icon {
+      margin-right:6px;
+      color:#ff004f;
+    }
+
+    /* ===== Detail Screen ===== */
+    #planDetail, #securePayment {
+      display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+      background:#0a0a0f; z-index:10001; overflow-y:auto;
+      animation: fadeIn 0.5s ease;
+      padding: 20px;
+    }
+    .detail-box {
+      max-width: 400px; margin:40px auto; background:#1b1b29; padding:20px;
+      border-radius:16px; box-shadow:0 0 25px rgba(0,255,200,0.25);
+    }
+    .detail-box h2 { color:#6ee7b7; margin-bottom:10px; }
+    .detail-box p { margin:6px 0; font-size:14px; }
+    .detail-box ul { list-style:none; padding:0; margin:15px 0; }
+    .detail-box li { margin-bottom:10px; position:relative; padding-left:22px; }
+    .detail-box li::before { content:"✔"; position:absolute; left:0; color:#6ee7b7; }
+    .btn {
+      display:inline-block; padding:10px 18px; background:#6ee7b7; 
+      color:#000; border-radius:10px; font-weight:bold; text-decoration:none;
+      margin-top:15px; text-align:center;
+      box-shadow:0 0 12px rgba(0,255,200,0.4);
+      cursor: pointer;
+    }
+    .btn:hover { background:#00ffcc; }
+    .back-btn {
+      display:inline-block; margin-top:15px; font-size:13px; color:#aaa; cursor:pointer;
+    }
+
+    /* ===== Secure Payment Screen ===== */
+    .secure-box {
+      max-width:420px; margin:50px auto; background:#1b1b29; padding:25px;
+      border-radius:16px; text-align:center;
+      box-shadow:0 0 25px rgba(0,255,200,0.25);
+    }
+    .secure-box h2 { color:#6ee7b7; margin-bottom:10px; }
+    .secure-box p { font-size:14px; margin:8px 0; color:#ccc; }
+    .logos { display:flex; justify-content:center; gap:15px; margin:15px 0; }
+    .logos span {
+      background:#fff; color:#000; font-weight:bold; padding:6px 10px;
+      border-radius:6px; font-size:13px;
+    }
+
+    /* ===== Buttons ===== */
+    .loading-btn, #verifyBtn {
+      display:none;
+      background:#111;
+      border:2px solid #00ffcc;
+      color:#00ffcc;
+      padding:12px 20px;
+      border-radius:10px;
+      font-weight:bold;
+      margin-top:15px;
+      position:relative;
+    }
+    .loading-btn::before {
+      content:"";
+      width:18px; height:18px;
+      border:3px solid #00ffcc;
+      border-top:3px solid transparent;
+      border-radius:50%;
+      position:absolute; left:12px; top:50%;
+      transform:translateY(-50%);
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      100% { transform:translateY(-50%) rotate(360deg); }
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      text-align: center; padding: 12px; font-size: 12px; color: #888;
+      margin-top: 20px; border-top: 1px solid #222;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Logo Screen ===== -->
+  <div id="logoScreen">
+    <h1>FF Panel Store</h1>
+    <p style="color:#aaa;margin-top:10px;">Next Level ff panel 🎮</p>
+  </div>
+
+  <!-- ===== Instruction Popup ===== -->
+  <div id="instruction">
+    <div class="popup">
+      <button class="close-btn" onclick="closePopup()">×</button>
+      <h2>📖 How to Buy</h2>
+      <div class="steps">
+        <p>1️⃣ Apna <b>Plan</b> select karo</p>
+        <p>2️⃣ <b>Buy Now</b> dabao</p>
+        <p>3️⃣ <b>Secure Payment</b> screen open hoga</p>
+        <p>4️⃣ Proceed → UPI App redirect hoga ✅</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Header ===== -->
+  <header>
+    <div id="deviceName">Detecting...</div>
+  </header>
+
+  <h1>🔥 Get best ff panel 🔥</h1>
+
+  <!-- ===== Plans ===== -->
+  <section class="plans">
+    <!-- Plan Template -->
+    <div class="plan" onclick="openDetail('1 Month Plan','599')">
+      <h3>1 Month</h3>
+      <div class="price"><span class="strike">₹799</span><br> ₹599</div>
+      <ul>
+        <li><span class="icon">🎯</span>95% Headshot Rate</li>
+        <li><span class="icon">🔫</span>AWM Aimbot</li>
+        <li><span class="icon">⚡</span>Sniper Fast Switch</li>
+        <li><span class="icon">📍</span>Player Location</li>
+        <li><span class="icon">⏳</span>1 Month Validity</li>
+      </ul>
+    </div>
+    <div class="plan" onclick="openDetail('2 Month Plan','1159')">
+      <h3>2 Month</h3>
+      <div class="price"><span class="strike">₹1399</span><br> ₹1159</div>
+      <ul>
+        <li><span class="icon">🎯</span>95% Headshot Rate</li>
+        <li><span class="icon">🔫</span>AWM Aimbot</li>
+        <li><span class="icon">⚡</span>Sniper Fast Switch</li>
+        <li><span class="icon">📍</span>Player Location</li>
+        <li><span class="icon">⏳</span>2 Month Support & Updates</li>
+      </ul>
+    </div>
+    <div class="plan" onclick="openDetail('3 Month Plan','1699')">
+      <h3>3 Month</h3>
+      <div class="price"><span class="strike">₹1999</span><br> ₹1699</div>
+      <ul>
+        <li><span class="icon">🎯</span>95% Headshot Rate</li>
+        <li><span class="icon">🔫</span>AWM Aimbot</li>
+        <li><span class="icon">⚡</span>Sniper Fast Switch</li>
+        <li><span class="icon">📍</span>Player Location</li>
+        <li><span class="icon">⏳</span>3 Month Support & Updates</li>
+      </ul>
+    </div>
+    <div class="plan" onclick="openDetail('Permanent Plan','2900')">
+      <h3>Permanent</h3>
+      <div class="price">₹2900</div>
+      <ul>
+        <li><span class="icon">🎯</span>95% Headshot Rate</li>
+        <li><span class="icon">🔫</span>AWM Aimbot</li>
+        <li><span class="icon">⚡</span>Sniper Fast Switch</li>
+        <li><span class="icon">📍</span>Player Location</li>
+        <li><span class="icon">🎮</span>Lifetime Access</li>
+        <li><span class="icon">💻</span>All Premium Features Included</li>
+        <li><span class="icon">👑</span>VIP Priority Support</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== Plan Detail Screen ===== -->
+  <div id="planDetail">
+    <div class="detail-box">
+      <h2 id="dName"></h2>
+      <p id="dPrice"></p>
+      <ul id="dFeatures"></ul>
+      <a class="btn" onclick="openSecure()">Buy Now</a>
+      <div class="back-btn" onclick="closeDetail()">← Back to Plans</div>
+    </div>
+  </div>
+
+  <!-- ===== Secure Payment Screen ===== -->
+  <div id="securePayment">
+    <div class="secure-box">
+      <h2>🔒 Secure Payment</h2>
+      <p>Your payment is 100% safe & encrypted.</p>
+      <p>We never store your UPI details.</p>
+      <div class="logos">
+        <span>GPay</span>
+        <span>PhonePe</span>
+        <span>Paytm</span>
+        <span>BHIM</span>
+      </div>
+      <a id="upiLink" class="btn">Proceed to Pay</a>
+      <button id="loadingBtn" class="loading-btn">Redirecting to UPI App...</button>
+      <button id="verifyBtn" class="btn">✅ Verify Payment</button>
+      <div class="back-btn" onclick="closeSecure()">← Back</div>
+
+      <!-- ===== Enter Key Section ===== -->
+      <div id="enterKeySection" style="text-align:center; margin-top:25px;">
+        <button class="btn" onclick="showKeyInput()">Enter Your Key 🔑</button>
+        
+        <div id="keyInputBox" style="display:none; margin-top:15px;">
+          <input type="text" id="userKey" placeholder="Enter your key" style="padding:10px; border-radius:10px; border:none; width:80%; text-align:center;">
+          <br>
+          <button class="btn" onclick="openPanel()" style="margin-top:12px;">Open Panel</button>
+          <div id="keyMessage" style="margin-top:10px; color:#ff4d6d; font-weight:bold;"></div>
+          <p style="margin-top:10px; font-size:12px; color:#aaa;">⚠ Key sirf plan buy karne ke baad milegi</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    © 2025 FF Panel Store | All Rights Reserved
+  </footer>
+
+  <script>
+    // Device detect
+    document.getElementById("deviceName").innerText = navigator.userAgent;
+
+    // Close instruction popup
+    function closePopup() {
+      document.getElementById("instruction").style.display = "none";
+    }
+
+    // Animate plan features on scroll
+    const featureLists = document.querySelectorAll(".plan li");
+    window.addEventListener("scroll", () => {
+      featureLists.forEach((f, i) => {
+        const rect = f.getBoundingClientRect().top;
+        if(rect < window.innerHeight - 50){
+          setTimeout(()=>{ f.classList.add("show"); }, i*100);
+        }
+      });
+    });
+
+    // ===== Flow control =====
+    let selectedUPI = "";
+
+    function openDetail(name, price){
+      document.getElementById("dName").innerText = name;
+      document.getElementById("dPrice").innerText = "₹" + price;
+      let fList = document.getElementById("dFeatures");
+      fList.innerHTML = "";
+
+      // Get the clicked plan's features
+      const plan = event.currentTarget;
+      plan.querySelectorAll("ul li").forEach(li=>{
+        let liClone = li.cloneNode(true);
+        liClone.classList.add("show");
+        fList.appendChild(liClone);
+      });
+
+      selectedUPI = `upi://pay?pa=surajit0923b-2@okhdfcbank&pn=FF%20Sensi&am=${price}&cu=INR`;
+      document.getElementById("planDetail").style.display = "block";
+    }
+
+    function closeDetail(){
+      document.getElementById("planDetail").style.display = "none";
+    }
+
+    function openSecure(){
+      document.getElementById("upiLink").href = selectedUPI;
+      document.getElementById("securePayment").style.display = "block";
+      document.getElementById("loadingBtn").style.display = "block";
+    }
+
+    function closeSecure(){
+      document.getElementById("securePayment").style.display = "none";
+    }
+
+    // ===== Enter Key Flow =====
+    function showKeyInput(){
+      document.getElementById("keyInputBox").style.display = "block";
+    }
+
+    // Example valid key
+    const VALID_KEY = "FFS2025";
+
+    function openPanel(){
+      const enteredKey = document.getElementById("userKey").value.trim();
+      const msg = document.getElementById("keyMessage");
+      msg.style.color = "#00ffcc";
+      msg.innerText = "⏳ Verifying key...";
+
+      setTimeout(()=>{
+        if(enteredKey === VALID_KEY){
+          msg.style.color = "#6ee7b7";
+          msg.innerText = "✅ Key valid! Panel opening...";
+          // Redirect or open panel code here
+        } else {
+          msg.style.color = "#ff4d6d";
+          msg.innerText = "❌ Wrong key! Please enter correct key.";
+        }
+      },1500);
+    }
+  </script>
+</body>
+</html>
